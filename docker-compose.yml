@@ -1,0 +1,30 @@
+version: '3.8'
+services: 
+  jsp_jdbc:
+    container_name: jsp_jdbc_server
+    build: ./docker
+    ports: 
+      - "82:8080"
+    networks: 
+      - java_net
+    depends_on: 
+      - jsp_jdbc_db
+
+  jsp_jdbc_db:
+    container_name: jsp_jdbc_bd
+    image: postgres:9.1.24
+    volumes: 
+      - ./docker/sql:/docker-entrypoint-initdb.d
+      - ./docker/data:/var/lib/postgresql/data
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=projeto_imagens
+    networks: 
+      - java_net
+    ports:
+      - "5433:5432"
+
+networks: 
+  java_net:
+    driver: bridge
